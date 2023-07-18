@@ -4,12 +4,12 @@ import { AppstoreOutlined, ShopOutlined, TableOutlined } from "@ant-design/icons
 import { useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { useState } from "react";
 
 
-function SideBar(){
+
+function SideBar({collapsed}){
     const navigate = useNavigate();
-    const [collapsed, setCollapsed] = useState(false)
+    // const [collapsed, setCollapsed] = useState(false)
     return <>
        {/* <Sider className="SideMenu" collapsed={collapsed}>
           <Menu onClick={(item) => {
@@ -36,9 +36,6 @@ function SideBar(){
        </Sider> */}
 
        <Sider theme="light" className="" collapsed={collapsed}>
-         <div style={{display : "flex", alignItems : "center"}}>
-                <GiHamburgerMenu onClick={() => setCollapsed(!collapsed)} size={34} style={{marginLeft : 20, marginTop : 10, marginBottom: 30, cursor:'pointer'}}/>
-            </div>
           <Menu items={[
               {
                 label : 'Dashboard',

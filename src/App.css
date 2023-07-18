@@ -1,0 +1,65 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.App{
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* .AppHeader {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.18)
+} */
+
+.sidebar {
+    background: rgb(0, 198, 125);
+    color: #fff;
+    height: 100vh;
+}
+
+.SideMenuAndPageContent {
+   display: flex;
+   flex: 1;
+   justify-content: flex-start;
+   align-items: flex-start;
+   
+}
+
+.SideMenu{
+    height: 100%;
+}
+
+.iconFeature {
+    border-radius: 20px;
+    font-size: 24px;
+    padding: 8px;
+}
+
+.iconColor1 {
+    color: rgb(8, 98, 70);
+    background-color: rgb(174, 233, 174);
+}
+
+.iconColor2 {
+    color: #d81b60;
+    background-color: #e292ad;
+}
+
+.iconColor3 {
+    color: #1a73e8;
+    background-color: #58a5e7d6;
+}
+
+.iconColor4 {
+    color: #191919;
+    background-color: #42424ac4;
+}
