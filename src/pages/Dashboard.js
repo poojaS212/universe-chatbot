@@ -1,5 +1,5 @@
 import { LineChartOutlined, PieChartOutlined, BarChartOutlined, FundOutlined } from "@ant-design/icons";
-import { Card, Divider, Space, Statistic, Table, Typography } from "antd";
+import { Card, Divider, Space, Statistic, Table, Typography, Col, Row } from "antd";
 import { useEffect, useState } from "react";
 import {getRecentLeads, getLeadsCharts} from "../Apis/index";
 
@@ -30,15 +30,37 @@ function DashBoard(){
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>DashBoard</Typography.Title>
           <Space direction="horizontal">
+            <Row justify="space-around">
+              <Col>
               <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="weekly" value={1234}/>
-              <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Monthly" value={1234}/>
-              <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Quaterly" value={1234}/>
+              </Col>
+              <Col>
+              <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Monthly" value={12323}/>
+              </Col>
+              <Col>
+                <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Quaterly" value={1235}/>
+              </Col>
+              <Col>
               <DashBoardCard icon={<FundOutlined className="iconColor4 iconFeature"/>} title="Yearly" value={1234}/>
-          </Space>
+              </Col>
+            </Row>
+              {/* <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="weekly" value={1234}/>
+              <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Monthly" value={12323}/>
+              <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Quaterly" value={1235}/>
+              <DashBoardCard icon={<FundOutlined className="iconColor4 iconFeature"/>} title="Yearly" value={1234}/> */}
+          </Space> 
           <Divider />
           <Space>
-            <RecentLeads />
-            <DashBoardChart />
+            <Row justify="space-around">
+              <Col>
+                 <RecentLeads />
+              </Col>
+              <Col>
+                 <DashBoardChart />
+              </Col>
+            </Row>
+            
+           
           </Space>
       </Space>
         
@@ -47,7 +69,7 @@ function DashBoard(){
 
 function DashBoardCard({title, value, icon}){
   return(
-    <Card>
+    <Card style={{width : 300, marginLeft : 20, marginRight : 20}}>
       <Space direction="horizontal">
       {icon}
       <Statistic title={title} value={value}></Statistic>
@@ -66,6 +88,38 @@ function RecentLeads(){
   //     setDataSource(result.prducts);
   //     setLoading(false)
   //    })
+  // }, [])
+  
+  // useEffect(() => {
+  //   setLoading(true)
+
+  //   const getTableData = async () => {
+  //     const data = await fetch('https://jsonplaceholder.typicode.com/todos')
+  //     .then(response => response.json)
+  //     .then(data => {
+
+  //        setDataSource(data)
+  //     }).catch(err => {
+  //       console.log(err)
+  //     }).finally(() => {
+  //       setLoading(false)
+  //       console.log("adsds")
+  //     })
+
+  //     console.log(data);
+
+  //     getTableData();
+  //   }
+    
+    //  fetch('https://jsonplaceholder.typicode.com/todos')
+    //  .then(response => response.json)
+    //  .then(data => {
+    //     setDataSource(data)
+    //  }).catch(err => {
+    //    console.log(err)
+    //  }).finally(() => {
+    //    setLoading(false)
+    //  })
   // }, [])
 
   const dataSource = [
@@ -99,12 +153,33 @@ function RecentLeads(){
     key : 'address'
   },
  ]
+
+// const columns = [{
+//   title : 'ID',
+//   dataIndex : 'id',
+//   key : '1'
+// },
+// {
+//   title : 'USER ID',
+//   dataIndex : 'user id',
+//   key : '2'
+// },
+// {
+//   title : 'STATUS',
+//   dataIndex : 'completed',
+//   key : '3',
+//   render:(completed) => {
+//     return <p>{completed ? 'completed' : 'In progress'}</p>
+//   }
+// },
+// ]
+
   return <>
     <Typography.Text>Recent Leads</Typography.Text>
    
     <Table columns={columns}
     dataSource={dataSource}
-   
+    style={{marginRight : 20}}
     >
 
     </Table>

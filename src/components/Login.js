@@ -2,7 +2,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import SignIn_img from "./SignIn_img";
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 function Login(){
     const history = useNavigate();
@@ -56,7 +56,7 @@ function Login(){
                 alert("Invalid Details")
             }else{
                 console.log("Successful")
-                history("/dashboard");
+                history("/dashboardpage");
 
                 localStorage.setItem("user_login", JSON.stringify(getUserInfo))
             }
@@ -84,7 +84,7 @@ function Login(){
                         </Button>
                         </Form>
 
-                        <p className='mt-3'>Already Have an Account ? <span>SignIn</span></p>
+                        <p className='mt-3'>Already Have an Account ? <span><NavLink to="/signup">SignUp</NavLink></span></p>
                 </div>
                 <SignIn_img />
             </section>
