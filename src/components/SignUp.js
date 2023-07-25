@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import SignIn_img from "./SignIn_img";
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignUp(){
 
@@ -49,9 +51,41 @@ function SignUp(){
        }else if(password.length < 5){
         alert("Please enter valid password")
        }else{
-        console.log("successful");
 
-         localStorage.setItem("userInfo", JSON.stringify([...data,inpValue]))
+        const reqData = {
+            name, email, date, password
+        }
+
+        axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
+        .then(response => {
+            console.log("🚀 ~ file: SignUp.js:55 ~ axios.get ~ response:", response.data)
+           
+            // if(response.data.success)
+            if(response.status === 200){
+                localStorage.setItem("userInfo", JSON.stringify([...data,inpValue]))
+                // alert(response.statusText)
+                toast.success('SuccessFul', {
+                    position: "top-center",
+                    });
+            }else{
+              
+                alert(response.data.message);
+
+
+            }
+            
+        })
+        .catch(function (error) {
+
+            console.log(error);
+            toast.error('error', {
+                position: "top-center",
+                });
+            
+         })
+
+
+         
        }
     }
 
@@ -83,6 +117,7 @@ function SignUp(){
                         <Button variant="primary" onClick={handleData} className='col-lg-6' style={{background : "#00c67d"}} type="submit">
                             Submit
                         </Button>
+                        <ToastContainer />
                         </Form>
 
                         <p className='mt-3'>Already Have an Account ? <span><NavLink to="/login">SignIn</NavLink></span></p>
