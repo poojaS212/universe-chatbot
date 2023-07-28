@@ -1,27 +1,32 @@
 
 import Form from 'react-bootstrap/Form';
+import { Dropdown } from 'react-bootstrap/';
 import Button from 'react-bootstrap/Button';
 import SignIn_img from "./SignIn_img";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 function SignUp(){
 
     const [inpValue, setInpValue] = useState({
         name : "",
         email : "",
-        date : "",
+        phone : "",
+        company : null,
         password : "",
     })
 
+
+
     const [data, setData] = useState([]);
    
-    console.log(inpValue);
+    console.log("inpu", inpValue);
 
     const getData = (event) => {
-        // console.log(event);
+        console.log("gee", event.target.value);
      const {value, name} = event.target;
 
      setInpValue(() => {
@@ -33,10 +38,16 @@ function SignUp(){
 
     }
 
+    // const set = name => {
+    //     return ({ target: { value } }) => {
+    //       setValues(oldValues => ({...oldValues, [name]: value }));
+    //     }
+    //   };
+
     const handleData = (event) => {
        event.preventDefault();
 
-       const {name, email, date, password} = inpValue;
+       const {name, email, phone, company, password} = inpValue;
 
        if(name === ""){
          alert("Name field Required")
@@ -44,18 +55,26 @@ function SignUp(){
         alert("Email field Required")
        }else if(!email.includes('@')){
         alert("Please enter valid email")
-       }else if(date === ""){
-        alert("date field Required")
-       }else if(password === ""){
+       }else if(phone === ""){
+        alert("phone field Required")
+       }else if(phone < 10){
+        alert("Please enter valid phone number")
+       }
+    //    else if(company === ""){
+    //     alert("Please enter valid company name")
+    //    }
+       else if(password === ""){
         alert("password field Required")
        }else if(password.length < 5){
         alert("Please enter valid password")
        }else{
 
         const reqData = {
-            name, email, date, password
+            name, email, phone, company, password
         }
-
+        console.log("🚀 ~ file: SignUp.js:63 ~ handleData ~ reqData:", reqData)
+     
+        
         axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
         .then(response => {
             console.log("🚀 ~ file: SignUp.js:55 ~ axios.get ~ response:", response.data)
@@ -64,12 +83,14 @@ function SignUp(){
             if(response.status === 200){
                 localStorage.setItem("userInfo", JSON.stringify([...data,inpValue]))
                 // alert(response.statusText)
-                toast.success('SuccessFul', {
+                toast.success(response.data.msg, {
                     position: "top-center",
                     });
             }else{
               
-                alert(response.data.message);
+                toast.error(response.data.msg, {
+                    position: "top-center",
+                    });
 
 
             }
@@ -78,7 +99,7 @@ function SignUp(){
         .catch(function (error) {
 
             console.log(error);
-            toast.error('error', {
+            toast.error(error.message, {
                 position: "top-center",
                 });
             
@@ -88,6 +109,20 @@ function SignUp(){
          
        }
     }
+
+    useEffect(() => {
+          axios.get("http://localhost:9000/conversation/getCompany")
+          .then(res => {
+            console.log("company Nma", res.data.result)
+            setData(res.data.result)
+          })
+    }, [])
+
+    const myCompany = data.companies
+    console.log("dasasdsd", myCompany)
+
+
+
 
 
     return <>
@@ -104,9 +139,34 @@ function SignUp(){
                             <Form.Control type="email" onChange={getData} name="email" placeholder="Enter email" />
                         </Form.Group>
 
-                        <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                            <Form.Control onChange={getData} name="date" type="date" />
+                        <Form.Group className="mb-3 col-lg-6" controlId="formBasicPhone">
+                            <Form.Control type="phone" onChange={getData} name="phone" placeholder="Enter phone Number" />
                         </Form.Group>
+
+                        {/* <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
+                            <Form.Control onChange={getData} name="date" type="date" />
+                        </Form.Group> */}
+
+                        {/* <Dropdown className="mb-3 col-lg-6">
+                            <Dropdown.Toggle style={{backgroundColor : "#00c67d", width : "100%"}} id="dropdown-basic">
+                                -- Select Company -- 
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/propstory">Propstory</Dropdown.Item>
+                                
+                            </Dropdown.Menu>
+                        </Dropdown> */}
+
+                     
+
+                               <Form.Select className="mb-3 col-lg-6" aria-label="Default select example" style={{backgroundColor : "#00c67d", width : "50%"}}>
+                                    <option onChange={(e) => {setInpValue(e.target.value)}} >Open this select menu</option>
+                                    {myCompany && myCompany.map((comp) => {
+                                        return <option value={comp._id} key={comp._id}>{comp.name}</option>
+                                    })}
+                                    
+                                </Form.Select>
 
                         <Form.Group className="mb-3 col-lg-6" controlId="formBasicPassword">
                             <Form.Control type="password" onChange={getData} name="password" placeholder="Password" />
