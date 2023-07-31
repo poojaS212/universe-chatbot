@@ -18,112 +18,100 @@ function SignUp(){
         company : null,
         password : "",
     })
-
-
+    // console.log("🚀 ~ file: SignUp.js:21 ~ SignUp ~ inpValue:", inpValue)
 
     const [data, setData] = useState([]);
-   
-    console.log("inpu", inpValue);
 
     const getData = (event) => {
-        console.log("gee", event.target.value);
-     const {value, name} = event.target;
+        // console.log("gee", event.target.value);
+        const {value, name} = event.target;
 
-     setInpValue(() => {
-        return {
-            ...inpValue,
-            [name] : value
-        }
-     })
-
+        setInpValue(() => {
+            return {
+                ...inpValue,
+                [name] : value
+            }
+        })
     }
-
-    // const set = name => {
-    //     return ({ target: { value } }) => {
-    //       setValues(oldValues => ({...oldValues, [name]: value }));
-    //     }
-    //   };
 
     const handleData = (event) => {
        event.preventDefault();
 
-       const {name, email, phone, company, password} = inpValue;
+       const {name, email, phone, password} = inpValue;
 
-       if(name === ""){
-         alert("Name field Required")
-       }else if(email === ""){
-        alert("Email field Required")
-       }else if(!email.includes('@')){
-        alert("Please enter valid email")
-       }else if(phone === ""){
-        alert("phone field Required")
-       }else if(phone < 10){
-        alert("Please enter valid phone number")
-       }
-    //    else if(company === ""){
-    //     alert("Please enter valid company name")
-    //    }
-       else if(password === ""){
-        alert("password field Required")
-       }else if(password.length < 5){
-        alert("Please enter valid password")
-       }else{
+        if(name === ""){
+            alert("Name field Required")
+        }else if(email === ""){
+            alert("Email field Required")
+        }else if(!email.includes('@')){
+            alert("Please enter valid email")
+        }else if(phone === ""){
+            alert("phone field Required")
+        }else if(phone < 10){
+            alert("Please enter valid phone number")
+        }
+        //    else if(company === ""){
+        //     alert("Please enter valid company name")
+        //    }
+        else if(password === ""){
+            alert("password field Required")
+        }else if(password.length < 5){
+            alert("Please enter valid password")
+        }else{
 
         const reqData = {
-            name, email, phone, company, password
+            name, email, phone, company: selectedOption, password
         }
-        console.log("🚀 ~ file: SignUp.js:63 ~ handleData ~ reqData:", reqData)
+        // console.log("🚀 ~ file: SignUp.js:63 ~ handleData ~ reqData:", reqData)
      
         
         axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
         .then(response => {
-            console.log("🚀 ~ file: SignUp.js:55 ~ axios.get ~ response:", response.data)
+            console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
            
             // if(response.data.success)
             if(response.status === 200){
-                localStorage.setItem("userInfo", JSON.stringify([...data,inpValue]))
+                // localStorage.setItem("userInfo", JSON.stringify([...data,inpValue]))
                 // alert(response.statusText)
                 toast.success(response.data.msg, {
                     position: "top-center",
-                    });
+                });
             }else{
-              
                 toast.error(response.data.msg, {
                     position: "top-center",
-                    });
-
-
+                });
             }
-            
         })
         .catch(function (error) {
-
-            console.log(error);
-            toast.error(error.message, {
+            // console.log("🚀 ~ file: SignUp.js:86 ~ handleData ~ error:", error)
+            // console.log(error);
+            toast.error(error.response.data.msg, {
                 position: "top-center",
-                });
+            });
             
          })
-
-
-         
        }
     }
 
     useEffect(() => {
-          axios.get("http://localhost:9000/conversation/getCompany")
-          .then(res => {
-            console.log("company Nma", res.data.result)
+        axios.get("http://localhost:9000/conversation/getCompany")
+        .then(res => {
+            // console.log("Company Name", res.data.result)
             setData(res.data.result)
-          })
+        })
+        
     }, [])
+    // const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState('');
 
     const myCompany = data.companies
-    console.log("dasasdsd", myCompany)
 
+    const handleSelectChange = (event) => {
+        // console.log("🚀 ~ file: SignUp.js:113 ~ handleSelectChange ~ event:", event.target)
+        setSelectedOption(event.target.value);
+    };
 
-
-
+    // console.log("dasasdsd", myCompany)
 
     return <>
         <div className="container mt-3">
@@ -143,30 +131,13 @@ function SignUp(){
                             <Form.Control type="phone" onChange={getData} name="phone" placeholder="Enter phone Number" />
                         </Form.Group>
 
-                        {/* <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
-                            <Form.Control onChange={getData} name="date" type="date" />
-                        </Form.Group> */}
-
-                        {/* <Dropdown className="mb-3 col-lg-6">
-                            <Dropdown.Toggle style={{backgroundColor : "#00c67d", width : "100%"}} id="dropdown-basic">
-                                -- Select Company -- 
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                <Dropdown.Item href="#/propstory">Propstory</Dropdown.Item>
-                                
-                            </Dropdown.Menu>
-                        </Dropdown> */}
-
-                     
-
-                               <Form.Select className="mb-3 col-lg-6" aria-label="Default select example" style={{backgroundColor : "#00c67d", width : "50%"}}>
-                                    <option onChange={(e) => {setInpValue(e.target.value)}} >Open this select menu</option>
-                                    {myCompany && myCompany.map((comp) => {
-                                        return <option value={comp._id} key={comp._id}>{comp.name}</option>
-                                    })}
-                                    
-                                </Form.Select>
+                        <Form.Select className="mb-3 col-lg-6" aria-label="Default select example" style={{backgroundColor : "#00c67d", width : "50%"}} value={selectedOption} onChange={handleSelectChange} >
+                            <option>Open this select menu</option>
+                            {myCompany && myCompany?.map((comp) => {
+                                return <option value={comp._id} key={comp._id}>{comp.name}</option>
+                            })}
+                            
+                        </Form.Select>
 
                         <Form.Group className="mb-3 col-lg-6" controlId="formBasicPassword">
                             <Form.Control type="password" onChange={getData} name="password" placeholder="Password" />

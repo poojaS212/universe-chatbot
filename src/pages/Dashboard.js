@@ -177,12 +177,12 @@ function RecentLeads(){
   return <>
     <Typography.Text>Recent Leads</Typography.Text>
    
-    <Table columns={columns}
+    {/* <Table columns={columns}
     dataSource={dataSource}
     style={{marginRight : 20}}
     >
 
-    </Table>
+    </Table> */}
   </>
 }
 
