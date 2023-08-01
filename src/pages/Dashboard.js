@@ -25,23 +25,21 @@ ChartJS.register(
   Legend
 );
 
-function DashBoard(){
+function DashBoard(props){
+ console.log("🚀 ~ file: Dashboard.js:29 ~ DashBoard ~ props:", props)
  return<>
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>DashBoard</Typography.Title>
           <Space direction="horizontal">
             <Row justify="space-around">
               <Col>
-              <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="weekly" value={1234}/>
+                <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="Total Bots" value={145} />
               </Col>
               <Col>
-              <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Monthly" value={12323}/>
+                <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Total Conversations" value={87654} />
               </Col>
               <Col>
-                <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Quaterly" value={1235}/>
-              </Col>
-              <Col>
-              <DashBoardCard icon={<FundOutlined className="iconColor4 iconFeature"/>} title="Yearly" value={1234}/>
+                <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Total Leads" value={1235}/>
               </Col>
             </Row>
               {/* <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="weekly" value={1234}/>
@@ -52,12 +50,12 @@ function DashBoard(){
           <Divider />
           <Space>
             <Row justify="space-around">
-              <Col>
+              {/* <Col>
                  <RecentLeads />
               </Col>
               <Col>
                  <DashBoardChart />
-              </Col>
+              </Col> */}
             </Row>
             
            

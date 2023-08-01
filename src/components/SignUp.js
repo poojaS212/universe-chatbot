@@ -67,7 +67,7 @@ function SignUp(){
         
         axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
         .then(response => {
-            console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
+            // console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
            
             // if(response.data.success)
             if(response.status === 200){

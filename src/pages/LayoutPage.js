@@ -18,15 +18,6 @@ import { Layout, Button, theme, Space, Badge, Card, Divider, Statistic, Table, T
 
 const { Header, Content } = Layout;
 
-
-
-// import type { InputRef } from 'antd';
-// import { Button, Input, Space, Table } from 'antd';
-// import type { ColumnType, ColumnsType } from 'antd/es/table';
-// import type { FilterConfirmProps } from 'antd/es/table/interface';
-
-
-
 function LayoutPage(){
     const history = useNavigate();
     const [collapsed, setCollapsed] = useState(false)
@@ -34,6 +25,8 @@ function LayoutPage(){
     const [userInfo, setUserInfo] = useState(false)
     const [bots, setBots] = useState([])
     const [conversations, setConversations] = useState([])
+    const [botCount, setbotCount] = useState(0)
+    const [conversationsCount, setConversationsCount] = useState(0)
 
     useEffect(() => {
       setUser(JSON.parse(localStorage.getItem("user_token")))
@@ -41,36 +34,39 @@ function LayoutPage(){
     }, [])
     
     useEffect(() => {
-      axios.post("http://localhost:9000/conversation/getBots", { company: userInfo?.company } ,  {
-          headers: {
-            'authorization': user
-          }
+      if(user) {
+        axios.post("http://localhost:9000/conversation/getBots", { company: userInfo?.company } ,  {
+            headers: {
+              'authorization': user
+            }
         })
         .then(response => {
-          console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
-        
-          if(response.status === 200){
-            setBots(response.data.result.bots)
+            console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
+          
+            if(response.status === 200){
+            
+              setBots(response.data.result?.bots)
+              setbotCount(response.data.result?.bots?.length)
               toast.success(response.data.msg, {
                   position: "top-center",
               });
-          }else{
-              toast.error(response.data.msg, {
-                  position: "top-center",
-              });
-          }
+            } else {
+                toast.error(response.data.msg, {
+                    position: "top-center",
+                });
+            }
         })
         .catch(function (error) {
-            toast.error(error.response.data.msg, {
-                position: "top-center",
-            });
+              toast.error(error.response.data?.msg, {
+                  position: "top-center",
+              });
         })
+      }
     }, [user?.token, userInfo?.company])
 
     const [selectedOption, setSelectedOption] = useState('');
 
     const handleSelectChange = (event) => {
-        console.log("🚀 ~ file: SignUp.js:113 ~ handleSelectChange ~ event:", event.target.value)
         setSelectedOption(event.target.value);
         if (event.target.value) 
           getConversation(event.target.value)
@@ -79,35 +75,30 @@ function LayoutPage(){
     // botConversations  
     const getConversation = (event) => {
       axios.post("http://localhost:9000/conversation/botConversations", { bot: event } ,  {
-        headers: {
-          'authorization': user
-        }
+          headers: {
+            'authorization': user
+          }
       })
       .then(response => {
-        console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
-      
-        if(response.status === 200){
-            setConversations(response.data.result)
-            toast.success(response.data.msg, {
-                position: "top-center",
-            });
-        }else{
-            toast.error(response.data.msg, {
-                position: "top-center",
-            });
-        }
+          if(response.status === 200) {
+              setConversations(response.data?.result)
+              setConversationsCount(response.data?.result?.length)
+              toast.success(response.data?.msg, {
+                  position: "top-center",
+              });
+          } else {
+              toast.error(response.data?.msg, {
+                  position: "top-center",
+              });
+          }
       })
       .catch(function (error) {
-          toast.error(error.response.data.msg, {
+          toast.error(error.response.data?.msg, {
               position: "top-center",
           });
       })
     }
-
-    // console.log("🚀 ~ file: LayoutPage.js:15 ~ LayoutPage ~ user:", user)
-    
-
-
+  
     // ------------------ START Table Code --------------------------------
     
     const [searchText, setSearchText] = useState('');
@@ -280,26 +271,7 @@ function LayoutPage(){
           <Layout>
             <SideBar collapsed={collapsed}/>
             <Layout>
-            { bots ? 
-            ( <Form>
-                <Form.Select className="mb-3 col-lg-6" aria-label="Default select example" style={{backgroundColor : "#00c67d", width : "50%"}} value={selectedOption} onChange={handleSelectChange} >
-                    <option>Open this select menu</option>
-                    {bots && bots?.map((bot) => {
-                        return <option value={bot._id} key={bot._id}>{bot.name}</option>
-                    })}
-                    
-                </Form.Select>
-            </Form> ) : null }
-            
-            {
-              conversations ? (
-                <Table columns={columns}
-                  dataSource={conversations}
-                  style={{marginRight : 20}}
-                  >
-                </Table>
-              ) : ''
-            }
+              
             <Header
                 style={{
                     padding: 0,
@@ -331,18 +303,42 @@ function LayoutPage(){
                 </Space>
                 </div>
                 
-                </Header>
-                <Content
-                    style={{
-                        margin: '24px 16px',
-                        padding: 24,
-                        minHeight: 280,
-                        background: colorBgContainer,
-                    }}
-                    >
-                    <DashBoard />
-                    
-                </Content>
+              </Header>
+              
+              <Content
+                  style={{
+                      margin: '24px 16px',
+                      padding: 24,
+                      minHeight: 280,
+                      background: colorBgContainer,
+                  }}
+                  >
+                  <DashBoard botCount conversationsCount />
+              </Content>
+
+              <Card>
+                  { bots ? 
+                  ( <Form>
+                      <Form.Select className="mb-3 col-lg-6" aria-label="Default select example" style={{backgroundColor : "#00c67d", width : "50%"}} value={selectedOption} onChange={handleSelectChange} >
+                          <option>Open this select menu</option>
+                          {bots && bots?.map((bot) => {
+                              return <option value={bot._id} key={bot._id}>{bot.name}</option>
+                          })}
+                          
+                      </Form.Select>
+                  </Form> ) : null }
+              
+            
+                  {
+                    conversations.length ? (
+                      <Table columns={columns}
+                        dataSource={conversations}
+                        style={{marginRight : 20}}
+                        >
+                      </Table>
+                    ) : ''
+                  }
+              </Card>
             </Layout>
           </Layout>
         </>)
