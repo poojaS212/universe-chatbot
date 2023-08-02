@@ -36,15 +36,17 @@ function SideBar({collapsed}){
        </Sider> */}
 
        <Sider theme="light" className="" collapsed={collapsed}>
-          <Menu items={[
+          <Menu onClick={(item) => {
+             navigate(item.key)
+          }}  items={[
               {
                 label : 'Dashboard',
                 icon : <AppstoreOutlined />,
-                key : '/dashboard'
+                key : '/dashboardpage'
             },
             {
-                label : 'Inventory',
-                key : '/inventory',
+                label : 'Conversation',
+                key : '/conversation',
                 icon: <ShopOutlined />
             },
             {
