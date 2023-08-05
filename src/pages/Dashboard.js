@@ -26,7 +26,7 @@ ChartJS.register(
 );
 
 function DashBoard(props){
- console.log("🚀 ~ file: Dashboard.js:29 ~ DashBoard ~ props:", props)
+//  console.log("🚀 ~ file: Dashboard.js:29 ~ DashBoard ~ props:", props)
  return<>
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>DashBoard</Typography.Title>
@@ -48,18 +48,18 @@ function DashBoard(props){
               <DashBoardCard icon={<FundOutlined className="iconColor4 iconFeature"/>} title="Yearly" value={1234}/> */}
           </Space> 
           <Divider />
-          <Space>
+          {/* <Space>
             <Row justify="space-around">
-              {/* <Col>
+              <Col>
                  <RecentLeads />
               </Col>
               <Col>
                  <DashBoardChart />
-              </Col> */}
+              </Col>
             </Row>
             
            
-          </Space>
+          </Space> */}
       </Space>
         
       </>

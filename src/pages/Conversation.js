@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 
 import React from 'react';
 import SideBar from "../components/SideBar";
@@ -19,6 +20,7 @@ import Highlighter from 'react-highlight-words';
 import { v4 as uuid } from 'uuid';
 
 import './conversation.css';
+import Chart from '../components/Chart';
 
 const { Header, Content } = Layout;
 
@@ -81,6 +83,7 @@ function Conversation(){
     const [conversationsCount, setConversationsCount] = useState(0)
     const [open, setOpen] = useState(false);
     const [conversationHTML, setConversationHTML] = useState('')
+    const [last7DaysData, setLast7DaysData] = useState([])
 
     useEffect(() => {
       setUser(JSON.parse(localStorage.getItem("user_token")))
@@ -126,6 +129,46 @@ function Conversation(){
           getConversation(event.target.value)
     };
 
+    // const handleDateFormat = (response) => {
+    //   response?.reduce((acc, record) => {
+    //     var d = new Date(record.added),
+    //     month = '' + (d.getMonth() + 1),
+    //     day   = '' + d.getDate(),
+    //     year  = d.getFullYear();
+
+    //     const date  = [year, month, day ].join('-')
+    //     acc[date]   = (acc[date] || 0) + 1;
+    //     return acc;
+    //   }, {});
+    // }
+
+    async function filterRecordsLastYDays(records, y) {
+      // console.log("🚀 ~ file: Conversation.js:146 ~ filterRecordsLastYDays ~ records:", records)
+      if (records) {
+        const dataArray = await Object.keys(records).map((date) => ({
+          date: date,
+          conversations: records[date],
+        }));
+        // console.log("🚀 ~ file: Conversation.js:148 ~ dataArray ~ dataArray:", dataArray)
+
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - y); // Calculate the date y days ago
+        // console.log("🚀 ~ file: Conversation.js:153 ~ filterRecordsLastYDays ~ currentDate:", currentDate)
+      
+        const lastYDaysRecords = dataArray.filter((record) => {
+          const recordDate = new Date(record.date);
+          // console.log("🚀 ~ file: Conversation.js:157 ~ lastYDaysRecords ~ new Date(record.date):", new Date(record.date))
+          // console.log("🚀 ~ file: Conversation.js:159 ~ lastYDaysRecords ~ recordDate.getTime() >= currentDate.getTime():", recordDate >= currentDate)
+          return recordDate >= currentDate;
+          
+        });
+        // lastYDaysRecords.push({"lead": records.lead})
+        // console.log("🚀 ~ file: Conversation.js:160 ~ lastYDaysRecords ~ lastYDaysRecords:", lastYDaysRecords)
+      
+        return lastYDaysRecords;
+      }
+    }
+
     // botConversations  
     const getConversation = (event) => {
       axios.post("http://localhost:9000/conversation/botConversations", { bot: event } ,  {
@@ -133,11 +176,50 @@ function Conversation(){
             'authorization': user
           }
       })
-      .then(response => {
+      .then( async (response) => {
           if(response.status === 200) {
-              // console.log('response.data?.result', response.data?.result)
               setConversations(response.data?.result)
               setConversationsCount(response.data?.result?.length)
+              // function countRecordsByDate(records) {
+              // const countAccDate = await handleDateFormat(response.data?.result)
+              
+              const countAccDate = await response.data?.result?.reduce((acc, record) => {
+                  var d = new Date(record.added),
+                  month = '' + (d.getMonth() + 1),
+                  day = '' + d.getDate(),
+                  year = d.getFullYear();
+
+                  const date = [year, month, day ].join('-')
+                  acc[date] = (acc[date] || 0) + 1;
+                  // if(record.phone) {
+                  //   acc['lead'] = (acc['lead'] || 0) + 1;
+                  // }
+                  return acc;
+              }, {});
+
+              // console.log("🚀 ~ file: Conversation.js:179 ~ countAccDate ~ countAccDate:", countAccDate)
+
+              if (countAccDate) {
+                const y = 7; // Replace this with the number of days you want to consider
+                const lastYDaysRecords = await filterRecordsLastYDays(countAccDate, y);
+                setLast7DaysData(lastYDaysRecords)
+                // console.log("🚀 ~ file: Conversation.js:183 ~ countRecordsByDate ~ lastYDaysRecords:", lastYDaysRecords)
+              }
+              // var result = [];
+              // for (var i=0; i<7; i++) {
+              //   var d = new Date();
+              //   d.setDate(d.getDate() - i);
+              //   var month = '' + (d.getMonth() + 1),
+              //   day = '' + d.getDate(),
+              //   year = d.getFullYear();
+              //   result.push( d )
+              // }
+
+              // // return(result.join(','));
+              // console.log("🚀 ~ file: Conversation.js:160 ~ countRecordsByDate ~ result.join(','):", result.join(','))
+              // console.log("🚀 ~ file: Conversation.js:147 ~ countAccDate ~ countAccDate:", countAccDate)
+              // }
+
               toast.success(response.data?.msg, {
                   position: "top-center",
               });
@@ -148,7 +230,7 @@ function Conversation(){
           }
       })
       .catch(function (error) {
-          toast.error(error.response.data?.msg, {
+          toast.error(error.response?.data?.msg, {
               position: "top-center",
           });
       })
@@ -352,7 +434,7 @@ function Conversation(){
         token: { colorBgContainer },
     } = theme.useToken();
     return<>
-       <Layout>
+      <Layout>
           <SideBar collapsed={collapsed}/>
           <Layout>
               
@@ -373,29 +455,29 @@ function Conversation(){
                       }}
                   />
                   <div style={{display: 'flex', float : 'right', marginRight:'82px'}}>
-                  <Space>
-                      
-                      <Badge count={10} dot>
-                          <MailOutlined style={{fontSize : 24}}/>
-                      </Badge>
-                      <Badge count={10}>
-                          <BellOutlined style={{fontSize : 24}}/>
-                      </Badge>
-          
-                  
-                  </Space>
+                    <Space>
+                        
+                        <Badge count={10} dot>
+                            <MailOutlined style={{fontSize : 24}}/>
+                        </Badge>
+                        <Badge count={10}>
+                            <BellOutlined style={{fontSize : 24}}/>
+                        </Badge>
+            
+                    
+                    </Space>
                   </div>
                   
               </Header>
-                
-                <Content
-                    style={{
-                        margin: '24px 16px',
-                        padding: 24,
-                        minHeight: 280,
-                        background: colorBgContainer,
-                    }}
-                    >
+
+              <Content
+                  style={{
+                      margin: '24px 16px',
+                      padding: 24,
+                      minHeight: 280,
+                      background: colorBgContainer,
+                  }}
+              >
                    
                 <Card>
                   { bots ? 
@@ -408,8 +490,14 @@ function Conversation(){
                           
                       </Form.Select>
                   </Form> ) : null }
-              
-                 {/* {conversations.map(el => {
+                </Card>
+
+                <Card>
+                    { last7DaysData.length ? (
+                      <Chart data={last7DaysData} /> 
+                    ) : '' }
+                </Card>
+                {/* {conversations.map(el => {
                         let date = new Date(el.added)
                         var month = date.getUTCMonth() + 1; //months from 1-12
                         var day = date.getUTCDate();
@@ -419,51 +507,51 @@ function Conversation(){
                     })
                 } */}
 
-                          {/* <table>
-                            <tr>
-                              <td>URL</td>
-                              <td>{record.url}</td>
-                            </tr>
-                            <tr>
-                              <td>Ref URL</td>
-                              <td>{record.url}</td>
-                            </tr>
-                           
-                          </table> */}
-                          <Modal
-                            title={conversationHTML?.name}
-                            centered
-                            open={open}
-                            onOk={() => setOpen(false)}
-                            onCancel={() => setOpen(false)}
-                            width={1000}
-                          >
-                            {/* { decodeURIComponent(conversationHTML?.conversation) } */}
-                            <div className="chat-body-react" dangerouslySetInnerHTML = {{__html: decodeURIComponent(conversationHTML?.conversation)} } ></div>
-                          </Modal>
-            
-                  {
-                    conversations.length ? (
-                      <Table columns={columns}
-                        dataSource={conversations}
-                        style={{marginRight : 20}}
-                        bordered
-                        expandable={{
-                          expandedRowRender: (record) => <p style={{ margin: 0 }}>{<>
-                            <h6>URL: <a href={record.url} ><i>{record.url}</i></a></h6>
-                            <h6>Referer URL: <a href={record.refURL} ><i>{record.refURL}</i></a></h6>
-                          </>}</p>,
-                          rowExpandable: (record) => record._id !== 'Not Expandable',
-                        }}
-                        >
-                      </Table>
-                    ) : ''
-                  }
-                </Card>
+                {/* <table>
+                  <tr>
+                    <td>URL</td>
+                    <td>{record.url}</td>
+                  </tr>
+                  <tr>
+                    <td>Ref URL</td>
+                    <td>{record.url}</td>
+                  </tr>
+                
+                </table> */}
+                  <Modal
+                    title={conversationHTML?.name}
+                    centered
+                    open={open}
+                    onOk={() => setOpen(false)}
+                    onCancel={() => setOpen(false)}
+                    width={1000}
+                  >
+                    {/* { decodeURIComponent(conversationHTML?.conversation) } */}
+                    <div className="chat-body-react" dangerouslySetInnerHTML = {{__html: decodeURIComponent(conversationHTML?.conversation)} } ></div>
+                  </Modal>
 
-                </Content>
-            </Layout>
-       </Layout>
+                  <Card>
+                    {
+                      conversations.length ? (
+                        <Table columns={columns}
+                          dataSource={conversations}
+                          style={{marginRight : 20}}
+                          bordered
+                          expandable={{
+                            expandedRowRender: (record) => <p style={{ margin: 0 }}>{<>
+                              <h6>URL: <a href={record.url} ><i>{record.url}</i></a></h6>
+                              <h6>Referer URL: <a href={record.refURL} ><i>{record.refURL}</i></a></h6>
+                            </>}</p>,
+                            rowExpandable: (record) => record._id !== 'Not Expandable',
+                          }}
+                          >
+                        </Table>
+                      ) : ''
+                    }
+                  </Card>
+              </Content>
+          </Layout>
+      </Layout>
     </>
 }
 
