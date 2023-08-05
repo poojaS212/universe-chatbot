@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 
 import React from 'react';
+import { useState, useEffect, useRef } from "react";
 import SideBar from "../components/SideBar";
 import axios from "axios";
 import { SearchOutlined } from '@ant-design/icons';
@@ -9,7 +10,6 @@ import {
     MenuUnfoldOutlined, MailOutlined, BellOutlined
 } from '@ant-design/icons';
 import { Layout, Button, theme, Space, Badge, Card, Tag, Table, Input, Modal, DatePicker } from "antd";
-import { useState, useEffect, useRef } from "react";
 // import moment from 'moment';
 
 // import { useNavigate, NavLink } from 'react-router-dom';
@@ -17,12 +17,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Form from 'react-bootstrap/Form';
 import Highlighter from 'react-highlight-words';
-import { v4 as uuid } from 'uuid';
+import moment from 'moment';
+
+// import { v4 as uuid } from 'uuid';
 
 import './conversation.css';
 import Chart from '../components/Chart';
 
 const { Header, Content } = Layout;
+const { RangePicker } = DatePicker;
 
 // const initialDate = moment();
 
@@ -355,6 +358,21 @@ function Conversation(){
       // setDataSource(newData);
     };
 
+    const [filteredData, setFilteredData] = useState([]);
+    // const [filterDate, setFilterDate] = useState(null);
+
+    const handleDateRangeChange = (dates) => {
+      const [startDate, endDate] = dates;
+      
+      const filteredDataSource = conversations.filter((item) => {
+        const itemDate = moment(item.added);
+        return (
+          itemDate >= startDate && itemDate <= endDate
+        );
+      });
+      setFilteredData(filteredDataSource);
+    };
+
     const columns = [
       { 
         key: React.Key,
@@ -497,27 +515,7 @@ function Conversation(){
                       <Chart data={last7DaysData} /> 
                     ) : '' }
                 </Card>
-                {/* {conversations.map(el => {
-                        let date = new Date(el.added)
-                        var month = date.getUTCMonth() + 1; //months from 1-12
-                        var day = date.getUTCDate();
-                        var year = date.getUTCFullYear();
-                        // el.added_printabble = date.getDay()+"/"+date.getMonth()+"/"+date.getFullYear()
-                        el.added_printabble = day + "/" + month + "/" + year;
-                    })
-                } */}
-
-                {/* <table>
-                  <tr>
-                    <td>URL</td>
-                    <td>{record.url}</td>
-                  </tr>
-                  <tr>
-                    <td>Ref URL</td>
-                    <td>{record.url}</td>
-                  </tr>
-                
-                </table> */}
+               
                   <Modal
                     title={conversationHTML?.name}
                     centered
@@ -533,19 +531,23 @@ function Conversation(){
                   <Card>
                     {
                       conversations.length ? (
-                        <Table columns={columns}
-                          dataSource={conversations}
-                          style={{marginRight : 20}}
-                          bordered
-                          expandable={{
-                            expandedRowRender: (record) => <p style={{ margin: 0 }}>{<>
-                              <h6>URL: <a href={record.url} ><i>{record.url}</i></a></h6>
-                              <h6>Referer URL: <a href={record.refURL} ><i>{record.refURL}</i></a></h6>
-                            </>}</p>,
-                            rowExpandable: (record) => record._id !== 'Not Expandable',
-                          }}
-                          >
-                        </Table>
+                        <>
+                          <RangePicker onChange={handleDateRangeChange} />
+                          <Table columns={columns}
+                            // dataSource={conversations}
+                            dataSource={filteredData.length > 0 ? filteredData : conversations}
+                            style={{marginRight : 20}}
+                            bordered
+                            expandable={{
+                              expandedRowRender: (record) => <p style={{ margin: 0 }}>{<>
+                                <h6>URL: <a href={record.url} ><i>{record.url}</i></a></h6>
+                                <h6>Referer URL: <a href={record.refURL} ><i>{record.refURL}</i></a></h6>
+                              </>}</p>,
+                              rowExpandable: (record) => record._id !== 'Not Expandable',
+                            }}
+                            >
+                          </Table>
+                        </>
                       ) : ''
                     }
                   </Card>
