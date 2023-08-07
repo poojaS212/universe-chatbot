@@ -87,6 +87,8 @@ function Conversation(){
     const [open, setOpen] = useState(false);
     const [conversationHTML, setConversationHTML] = useState('')
     const [last7DaysData, setLast7DaysData] = useState([])
+    const [totalConversation, setTotalConversation] = useState(0)
+    const [totalLead, setTotalLead] = useState(0)
 
     useEffect(() => {
       setUser(JSON.parse(localStorage.getItem("user_token")))
@@ -146,28 +148,20 @@ function Conversation(){
     // }
 
     async function filterRecordsLastYDays(records, y) {
-      // console.log("🚀 ~ file: Conversation.js:146 ~ filterRecordsLastYDays ~ records:", records)
       if (records) {
         const dataArray = await Object.keys(records).map((date) => ({
           date: date,
           conversations: records[date],
         }));
-        // console.log("🚀 ~ file: Conversation.js:148 ~ dataArray ~ dataArray:", dataArray)
 
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() - y); // Calculate the date y days ago
-        // console.log("🚀 ~ file: Conversation.js:153 ~ filterRecordsLastYDays ~ currentDate:", currentDate)
       
         const lastYDaysRecords = dataArray.filter((record) => {
           const recordDate = new Date(record.date);
-          // console.log("🚀 ~ file: Conversation.js:157 ~ lastYDaysRecords ~ new Date(record.date):", new Date(record.date))
-          // console.log("🚀 ~ file: Conversation.js:159 ~ lastYDaysRecords ~ recordDate.getTime() >= currentDate.getTime():", recordDate >= currentDate)
           return recordDate >= currentDate;
           
         });
-        // lastYDaysRecords.push({"lead": records.lead})
-        // console.log("🚀 ~ file: Conversation.js:160 ~ lastYDaysRecords ~ lastYDaysRecords:", lastYDaysRecords)
-      
         return lastYDaysRecords;
       }
     }
@@ -183,9 +177,7 @@ function Conversation(){
           if(response.status === 200) {
               setConversations(response.data?.result)
               setConversationsCount(response.data?.result?.length)
-              // function countRecordsByDate(records) {
-              // const countAccDate = await handleDateFormat(response.data?.result)
-              
+              var leads = 0
               const countAccDate = await response.data?.result?.reduce((acc, record) => {
                   var d = new Date(record.added),
                   month = '' + (d.getMonth() + 1),
@@ -194,9 +186,12 @@ function Conversation(){
 
                   const date = [year, month, day ].join('-')
                   acc[date] = (acc[date] || 0) + 1;
-                  // if(record.phone) {
-                  //   acc['lead'] = (acc['lead'] || 0) + 1;
-                  // }
+
+                  if(record.phone) {
+                    leads += 1
+                  }
+
+                  setTotalLead(leads)
                   return acc;
               }, {});
 
@@ -364,12 +359,20 @@ function Conversation(){
     const handleDateRangeChange = (dates) => {
       const [startDate, endDate] = dates;
       
+      var leads = 0
       const filteredDataSource = conversations.filter((item) => {
         const itemDate = moment(item.added);
+        if(item.phone) {
+          leads += 1
+        }
         return (
           itemDate >= startDate && itemDate <= endDate
         );
       });
+
+      // console.log("🚀 ~ file: Conversation.js:370 ~ handleDateRangeChange ~ leads:", leads)
+      setTotalConversation(conversations.length)
+      setTotalLead(leads)
       setFilteredData(filteredDataSource);
     };
 
@@ -377,6 +380,13 @@ function Conversation(){
       { 
         key: React.Key,
       },
+
+      // {
+      //   title: () => <span>Total Rows: {conversations?.length}</span>,
+      //   dataIndex: 'columnName',
+      //   key: 'columnName',
+      //   // Other column configurations
+      // },
 
       {
         title : 'Name',
@@ -533,6 +543,8 @@ function Conversation(){
                       conversations.length ? (
                         <>
                           <RangePicker onChange={handleDateRangeChange} />
+                          <p>Total Conversation: { totalConversation >= 0 ? conversations?.length : totalConversation }</p>
+                          <p>Total Leads: { totalLead }</p>
                           <Table columns={columns}
                             // dataSource={conversations}
                             dataSource={filteredData.length > 0 ? filteredData : conversations}
