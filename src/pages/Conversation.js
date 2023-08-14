@@ -12,7 +12,7 @@ import {
 import { Layout, Button, theme, Space, Badge, Card, Tag, Table, Input, Modal, DatePicker } from "antd";
 // import moment from 'moment';
 
-// import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Form from 'react-bootstrap/Form';
@@ -23,6 +23,8 @@ import moment from 'moment';
 
 import './conversation.css';
 import Chart from '../components/Chart';
+
+import { BiLogIn, BiUser } from 'react-icons/bi'
 
 const { Header, Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -90,6 +92,7 @@ function Conversation(){
     const [totalConversation, setTotalConversation] = useState(0)
     const [totalLead, setTotalLead] = useState(0)
 
+
     useEffect(() => {
       setUser(JSON.parse(localStorage.getItem("user_token")))
       setUserInfo(JSON.parse(localStorage.getItem("user")))
@@ -103,7 +106,7 @@ function Conversation(){
             }
         })
         .then(response => {
-            console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
+            // console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
           
             if(response.status === 200){
             
@@ -133,6 +136,7 @@ function Conversation(){
         if (event.target.value) 
           getConversation(event.target.value)
     };
+
 
     // const handleDateFormat = (response) => {
     //   response?.reduce((acc, record) => {
@@ -177,6 +181,7 @@ function Conversation(){
           if(response.status === 200) {
               setConversations(response.data?.result)
               setConversationsCount(response.data?.result?.length)
+              
               var leads = 0
               const countAccDate = await response.data?.result?.reduce((acc, record) => {
                   var d = new Date(record.added),
@@ -358,20 +363,26 @@ function Conversation(){
 
     const handleDateRangeChange = (dates) => {
       const [startDate, endDate] = dates;
+
       
       var leads = 0
       const filteredDataSource = conversations.filter((item) => {
         const itemDate = moment(item.added);
+
         if(item.phone) {
           leads += 1
         }
         return (
-          itemDate >= startDate && itemDate <= endDate
+          itemDate >= startDate && itemDate <= endDate.endOf('day')
         );
+        
       });
 
+
+
       // console.log("🚀 ~ file: Conversation.js:370 ~ handleDateRangeChange ~ leads:", leads)
-      setTotalConversation(conversations.length)
+      // setTotalConversation(conversations.length)
+      setTotalConversation(filteredDataSource.length)
       setTotalLead(leads)
       setFilteredData(filteredDataSource);
     };
@@ -485,14 +496,14 @@ function Conversation(){
                   <div style={{display: 'flex', float : 'right', marginRight:'82px'}}>
                     <Space>
                         
-                        <Badge count={10} dot>
+                        {/* <Badge count={10} dot>
                             <MailOutlined style={{fontSize : 24}}/>
                         </Badge>
                         <Badge count={10}>
                             <BellOutlined style={{fontSize : 24}}/>
-                        </Badge>
-            
-                    
+                        </Badge> */}
+               
+                       <NavLink to="/logout"> <BiUser /> Logout</NavLink>
                     </Space>
                   </div>
                   
@@ -543,7 +554,8 @@ function Conversation(){
                       conversations.length ? (
                         <>
                           <RangePicker onChange={handleDateRangeChange} />
-                          <p>Total Conversation: { totalConversation >= 0 ? conversations?.length : totalConversation }</p>
+                          {/* <p>Total Conversation: { totalConversation >= 0 ? conversations?.length : totalConversation }</p> */}
+                          <p>Total Conversation: { filteredData.length ? filteredData.length : conversations?.length }</p>
                           <p>Total Leads: { totalLead }</p>
                           <Table columns={columns}
                             // dataSource={conversations}

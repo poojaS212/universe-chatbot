@@ -9,6 +9,7 @@ import SideBar from './components/SideBar';
 import DashBoard from './pages/Dashboard';
 import LayoutPage from './pages/LayoutPage'
 import Conversation from './pages/Conversation';
+import Logout from './components/Logout';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/dashboard' element={<DashBoard />}/>
           <Route path='/dashboardpage' element={<LayoutPage />} />
           <Route path='/conversation' element={<Conversation />} />
+          <Route path='/logout' element={<Logout />}/>
        </Routes>
     </div>
   );

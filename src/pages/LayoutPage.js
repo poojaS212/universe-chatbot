@@ -17,6 +17,9 @@ import Highlighter from 'react-highlight-words';
 import { Layout, Button, theme, Space, Badge, Card, Divider, Statistic, Table, Typography, Col, Row, Input, InputRef } from "antd";
 import Conversation from './Conversation';
 
+import { BiLogIn, BiUser } from 'react-icons/bi'
+
+
 const { Header, Content } = Layout;
 
 function LayoutPage(){
@@ -99,6 +102,7 @@ function LayoutPage(){
           });
       })
     }
+
   
     // ------------------ START Table Code --------------------------------
     
@@ -293,12 +297,14 @@ function LayoutPage(){
                 <div style={{display: 'flex', float : 'right', marginRight:'82px'}}>
                 <Space>
                     
-                    <Badge count={10} dot>
+                    {/* <Badge count={10} dot>
                         <MailOutlined style={{fontSize : 24}}/>
                     </Badge>
                     <Badge count={10}>
                         <BellOutlined style={{fontSize : 24}}/>
-                    </Badge>
+                    </Badge> */}
+
+                  <NavLink to="/logout"> <BiUser /> Logout</NavLink>
         
                 
                 </Space>
