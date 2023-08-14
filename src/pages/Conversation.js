@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Form from 'react-bootstrap/Form';
 import Highlighter from 'react-highlight-words';
 import moment from 'moment';
+import api from '../Apis/api';
 
 // import { v4 as uuid } from 'uuid';
 
@@ -100,7 +101,7 @@ function Conversation(){
     
     useEffect(() => {
       if(user) {
-        axios.post("http://localhost:9000/conversation/getBots", { company: userInfo?.company } ,  {
+        api.post("/conversation/getBots", { company: userInfo?.company } ,  {
             headers: {
               'authorization': user
             }
@@ -172,7 +173,7 @@ function Conversation(){
 
     // botConversations  
     const getConversation = (event) => {
-      axios.post("http://localhost:9000/conversation/botConversations", { bot: event } ,  {
+      api.post("/conversation/botConversations", { bot: event } ,  {
           headers: {
             'authorization': user
           }
@@ -576,7 +577,9 @@ function Conversation(){
                     }
                   </Card>
               </Content>
+              
           </Layout>
+          
       </Layout>
     </>
 }

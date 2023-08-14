@@ -5,8 +5,10 @@ import { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import api from '../Apis/api';
 
 function Login(){
+
     const history = useNavigate();
 
     const [inpValue, setInpValue] = useState({
@@ -43,7 +45,8 @@ function Login(){
             // const reqData = {
             //     email, password
             // }
-            axios.post("http://localhost:9000/user/login",  { email, password })
+            api.post("/user/login",  { email, password })
+            // axios.post("http://localhost:9000/user/login",  { email, password })
             .then(response => {
                 if(response.status === 200){
                     // console.log("🚀 ~ file: Login.js:53 ~ handleData ~ response.data:", response.data)

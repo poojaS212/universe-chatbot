@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
+import api from '../Apis/api';
 
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
@@ -18,6 +19,7 @@ import { Layout, Button, theme, Space, Badge, Card, Divider, Statistic, Table, T
 import Conversation from './Conversation';
 
 import { BiLogIn, BiUser } from 'react-icons/bi'
+import Footer from '../components/Footer';
 
 
 const { Header, Content } = Layout;
@@ -39,7 +41,7 @@ function LayoutPage(){
     
     useEffect(() => {
       if(user) {
-        axios.post("http://localhost:9000/conversation/getBots", { company: userInfo?.company } ,  {
+        api.post("/conversation/getBots", { company: userInfo?.company } ,  {
             headers: {
               'authorization': user
             }
@@ -78,7 +80,7 @@ function LayoutPage(){
 
     // botConversations  
     const getConversation = (event) => {
-      axios.post("http://localhost:9000/conversation/botConversations", { bot: event } ,  {
+      axios.post("/conversation/botConversations", { bot: event } ,  {
           headers: {
             'authorization': user
           }
@@ -346,6 +348,8 @@ function LayoutPage(){
                     ) : ''
                   }
               </Card> */}
+
+              <Footer />
             </Layout>
           </Layout>
         </>)

@@ -8,6 +8,7 @@ import { NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import api from '../Apis/api';
 
 function SignUp(){
 
@@ -64,8 +65,8 @@ function SignUp(){
         }
         // console.log("🚀 ~ file: SignUp.js:63 ~ handleData ~ reqData:", reqData)
      
-        
-        axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
+        api.post(`/user/register`,  { crossdomain: true, reqData })
+        // axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
         .then(response => {
             // console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
            
@@ -94,7 +95,7 @@ function SignUp(){
     }
 
     useEffect(() => {
-        axios.get("http://localhost:9000/conversation/getCompany")
+        api.get(`/conversation/getCompany`)
         .then(res => {
             // console.log("Company Name", res.data.result)
             setData(res.data.result)
