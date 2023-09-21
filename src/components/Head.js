@@ -10,14 +10,16 @@ import { NavLink } from 'react-router-dom';
 
 function Head(){
     return <>
-       <Navbar bg="light" data-bs-theme="light">
+       <Navbar bg="light" data-bs-theme="light" expand="lg" collapseOnSelect>
         <Container>
           <Navbar.Brand href="#home">
             <img width={80} src="https://cdn.propstory.com/magicpages/NAME/16iwl4khzwli8ekjocPS_logo.png"  alt="brand"/>
           </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
+            {/* <Nav.Link href="#features">Features</Nav.Link> */}
           </Nav>
           <Nav>
           <NavLink to="/signup">
@@ -31,7 +33,7 @@ function Head(){
             </Nav.Link>
            </NavLink>
           </Nav>
-        
+          </Navbar.Collapse>
         </Container>
       </Navbar>
 

@@ -35,7 +35,11 @@ function SideBar({collapsed}){
           ]}></Menu>
        </Sider> */}
 
-       <Sider theme="light" className="" collapsed={collapsed}>
+       <Sider theme="light"   
+         breakpoint="xs"
+         collapsed={!collapsed}
+        
+        >
           <Menu onClick={(item) => {
              navigate(item.key)
           }}  items={[

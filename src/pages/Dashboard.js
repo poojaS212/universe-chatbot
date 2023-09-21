@@ -31,14 +31,14 @@ function DashBoard(props){
       <Space size={20} direction="vertical">
         <Typography.Title level={4}>DashBoard</Typography.Title>
           <Space direction="horizontal">
-            <Row justify="space-around">
-              <Col>
+            <Row gutter={16} justify="space-around">
+              <Col className="gutter-row" span={16}>
                 <DashBoardCard icon={<LineChartOutlined className="iconColor1 iconFeature"/>} title="Total Bots" value={145} />
               </Col>
-              <Col>
+              <Col className="gutter-row" span={16}>
                 <DashBoardCard icon={<PieChartOutlined className="iconColor2 iconFeature"/>} title="Total Conversations" value={87654} />
               </Col>
-              <Col>
+              <Col className="gutter-row" span={16}>
                 <DashBoardCard icon={<BarChartOutlined className="iconColor3 iconFeature"/>} title="Total Leads" value={1235}/>
               </Col>
             </Row>

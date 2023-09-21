@@ -43,7 +43,7 @@ function Home (){
                     <div className='col-md-6'>
                         <div>
                         <div className='sign_img mt-3'>
-                        <img src="./home-img.jpg" style={{width: "500px"}} alt=""/>
+                        <img src="./home-img.jpg" className='main_img' alt=""/>
                     </div>
                         </div>
                     </div>

@@ -73,8 +73,9 @@ function Login(){
 
   return <>
      <div className="container mt-3">
-            <section className='d-flex justify-content-between'>
-                <div className="left_data mt-3 p-3" style={{width: "100%"}}>
+            <section>
+                <div className='row'>
+                <div className="col-md-6 mt-3 p-3" >
                     <h3 className='text-center col-lg-6'>Login</h3>
                     <Form>
                        
@@ -94,7 +95,12 @@ function Login(){
 
                     <p className='mt-3'>Already Have an Account ? <span><NavLink to="/signup">SignUp</NavLink></span></p>
                 </div>
-                <SignIn_img />
+                <div className="col-md-6 mt-3 p-3" >
+                   <SignIn_img />
+                </div>
+                </div>
+               
+                
             </section>
         </div>
   </>

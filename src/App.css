@@ -11,6 +11,11 @@
     height: 100vh;
 }
 
+.main_img, .lg_img{
+    width: 500px;
+}
+
+
 /* .AppHeader {
     height: 70px;
     display: flex;
@@ -104,4 +109,10 @@
     text-decoration: none;
     font-size: 18px;
     font-weight: 800;
+}
+
+@media screen and (max-width: 768px) {
+    .main_img, .lg_img{
+        width: 100%;
+    }
 }

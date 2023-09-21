@@ -116,8 +116,9 @@ function SignUp(){
 
     return <>
         <div className="container mt-3">
-            <section className='d-flex justify-content-between'>
-                <div className="left_data mt-3 p-3" style={{width: "100%"}}>
+            <section >
+                <div className='row'>
+                <div className="col-md-6 mt-3 p-3">
                     <h3 className='text-center col-lg-6'>Sign Up</h3>
                     <Form>
                         <Form.Group className="mb-3 col-lg-6" controlId="formBasicEmail">
@@ -154,7 +155,12 @@ function SignUp(){
 
                         <p className='mt-3'>Already Have an Account ? <span><NavLink to="/login">SignIn</NavLink></span></p>
                 </div>
-                <SignIn_img />
+                 <div className='col-md-6'>
+                 <SignIn_img />
+                 </div>
+                </div>
+                
+                
             </section>
         </div>
     </>
