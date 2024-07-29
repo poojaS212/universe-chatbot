@@ -68,7 +68,7 @@ function DashBoard(props) {
     if (user) {
       api
         .post(
-          "http://localhost:9000/conversation/getBots",
+          "/conversation/getBots",
           { company: userInfo?.company },
           {
             headers: {
@@ -90,7 +90,7 @@ function DashBoard(props) {
     // console.log("user", user);
     api
       .post(
-        "http://localhost:9000/conversation/allbotConversations", {},
+        "/conversation/allbotConversations", {},
         {
           headers: {
             authorization: user,
