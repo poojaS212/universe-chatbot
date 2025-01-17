@@ -6,7 +6,7 @@ function Logout(){
 
    useEffect(() => {
     localStorage.removeItem('user')
-    history('/')
+    history('/login')
    }, [])
 
 }

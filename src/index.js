@@ -8,9 +8,9 @@ const el = document.getElementById('root');
 const root = createRoot(el);
 
 root.render(
-  <BrowserRouter>
+  // <BrowserRouter>
      <App />
-  </BrowserRouter>
+  // </BrowserRouter>
 )
 
 

@@ -55,6 +55,7 @@ function Login(){
                     });
                     localStorage.setItem("user", JSON.stringify(response.data?.user))
                     localStorage.setItem("user_token", JSON.stringify(response.data?.token))
+                    // localStorage.setItem("loggedin", true)
                     history("/dashboardpage");
                 }else{
                     toast.error(response.data?.msg, {
@@ -94,6 +95,7 @@ function Login(){
                     </Form>
 
                     <p className='mt-3'>Already Have an Account ? <span><NavLink to="/signup">SignUp</NavLink></span></p>
+                    <p><span><NavLink to="/forget-password">Forgot Password</NavLink></span></p>
                 </div>
                 <div className="col-md-6 mt-3 p-3" >
                    <SignIn_img />

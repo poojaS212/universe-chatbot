@@ -25,7 +25,19 @@ ChartJS.register(
     ArcElement
   );
 
-  function PieChartPage(){
+  function generateHexColor(seed) {
+    // Convert the seed to a string and hash it
+    const hash = [...seed.toString()].reduce((acc, char) => {
+        return (acc + char.charCodeAt(0)) * 31 % 16777216; // Ensures a 24-bit range
+    }, 0);
+
+    // Convert the hash to a hexadecimal string and pad with zeros
+    const color = hash.toString(16).padStart(6, '0');
+
+    return `#${color}`;
+}
+
+  function PieChartPage(props){
    //   const data = {
    //      datasets : [{
    //          data : [10,20,30],
@@ -36,10 +48,10 @@ ChartJS.register(
 
      const [data, setData] = useState({
       datasets : [{
-          data : [10,20,30],
-          backgroundColor : ['#428449b8', '#e292ad', '#58a5e7d6' ]
+          data : Object.values(props.data),
+          backgroundColor : Object.keys(props.data).map(generateHexColor)
       }],
-      labels : ['#428449b8', '#e292ad', '#58a5e7d6']
+      labels : Object.keys(props.data)
    })
 
      useEffect(()=>{

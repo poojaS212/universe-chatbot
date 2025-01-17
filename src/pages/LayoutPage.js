@@ -276,7 +276,7 @@ function LayoutPage(){
       user ? 
         (<>
           <Layout>
-            <SideBar collapsed={collapsed}/>
+            <SideBar collapsed={!collapsed}/>
             <Layout>
               
             <Header
@@ -349,7 +349,6 @@ function LayoutPage(){
                   }
               </Card> */}
 
-              <Footer />
             </Layout>
           </Layout>
         </>)

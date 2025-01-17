@@ -68,6 +68,7 @@ function SignUp(){
         api.post(`/user/register`,  { crossdomain: true, reqData })
         // axios.post("http://localhost:9000/user/register",  { crossdomain: true, reqData })
         .then(response => {
+            console.log('response from server', response.status)
             // console.log("🚀 ~ file: SignUp.js:70 ~ handleData ~ response:", response)
            
             // if(response.data.success)
@@ -84,6 +85,7 @@ function SignUp(){
             }
         })
         .catch(function (error) {
+            console.log('error from server ', error)
             // console.log("🚀 ~ file: SignUp.js:86 ~ handleData ~ error:", error)
             // console.log(error);
             toast.error(error.response.data.msg, {
@@ -105,7 +107,7 @@ function SignUp(){
     // const [options, setOptions] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
 
-    const myCompany = data.companies
+    const myCompany = data && data.companies
 
     const handleSelectChange = (event) => {
         // console.log("🚀 ~ file: SignUp.js:113 ~ handleSelectChange ~ event:", event.target)

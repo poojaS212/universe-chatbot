@@ -1,5 +1,5 @@
 import Button from 'react-bootstrap/Button';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Navigate } from 'react-router-dom';
 import Head from './Head';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -37,7 +37,7 @@ function Home (){
                         <div>
                         <h2 className=' mt-5 col-lg-8' style={{ color: "#192e36"}}><span style={{color : "#00f3a6"}}>ChatBot</span> Helps You automate customer Service</h2>
                     <p className="mt-5" style={{color : "#086246"}}>A platform where you can get all the details about ChatBot</p>
-                    <Button className='text-center mt-3' variant="success" style={{ backgroundColor: "#086246"}}> <NavLink to="/signup" style={{ color: "#fff", textDecoration: "none"}}>Get Started</NavLink></Button>{' '}
+                    <Button className='text-center mt-3' variant="success" style={{ backgroundColor: "#086246"}}> <Navigate to={"/signup"} style={{ color: "#fff", textDecoration: "none"}}>Get Started</Navigate></Button>{' '}
                         </div>
                     </div>
                     <div className='col-md-6'>
@@ -110,7 +110,7 @@ art technologies and methodologies</h4>
              
             
     </div>
-    <Footer/>
+    {/* <Footer/> */}
   </>
 }
 

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import '../App.css'
 import SideBar from "../components/SideBar";
 import axios from "axios";
 import { SearchOutlined } from "@ant-design/icons";
@@ -10,6 +11,7 @@ import {
   MenuUnfoldOutlined,
   MailOutlined,
   BellOutlined,
+  LoadingOutlined
 } from "@ant-design/icons";
 import {
   Layout,
@@ -22,7 +24,7 @@ import {
   Table,
   Input,
   Modal,
-  DatePicker,
+  DatePicker,Flex, Spin
 } from "antd";
 // import moment from 'moment';
 
@@ -40,6 +42,8 @@ import "./conversation.css";
 import Chart from "../components/Chart";
 
 import { BiLogIn, BiUser } from "react-icons/bi";
+import Loader from "../components/Loader";
+import PieChartPage from "./PieChartPage";
 
 const { Header, Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -108,12 +112,19 @@ function Conversation() {
   const [totalConversation, setTotalConversation] = useState(0);
   const [totalLead, setTotalLead] = useState(0);
 
+  const [hideColumn, setHideColumn] = useState(false); // table
+
+  const [loading, setLoading] =  useState(true); // loader
+
+  const [pieChartData, setpieChartData] = useState(null);
+
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user_token")));
     setUserInfo(JSON.parse(localStorage.getItem("user")));
   }, []);
 
   useEffect(() => {
+    setLoading(true)
     if (user) {
       api
         .post(
@@ -144,7 +155,9 @@ function Conversation() {
           toast.error(error.response.data?.msg, {
             position: "top-center",
           });
-        });
+        }).finally(() => {
+          setLoading(false)
+        })
     }
   }, [user?.token, userInfo?.company]);
 
@@ -152,6 +165,8 @@ function Conversation() {
 
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
+    console.log("heehee", event.target.value);
+    
     if (event.target.value) getConversation(event.target.value);
   };
 
@@ -187,11 +202,12 @@ function Conversation() {
   }
 
   // botConversations
-  const getConversation = (event) => {
+  const getConversation = (botId) => {
+    setLoading(true)
     api
       .post(
         "/conversation/botConversations",
-        { bot: event },
+        { bot: botId },
         {
           headers: {
             authorization: user,
@@ -202,6 +218,21 @@ function Conversation() {
         if (response.status === 200) {
           setConversations(response.data?.result);
           setConversationsCount(response.data?.result?.length);
+
+          const pichartData = response.data?.result.reduce((acc, curr) => {
+            console.log('curr',curr)
+            if (!acc[curr.source]) {
+              acc[curr.source] = 1
+            } else{
+              acc[curr.source] += 1
+            }
+          
+            
+            return acc;
+          }, {})
+          console.log("piechart", pichartData)
+          setpieChartData(pichartData);
+          console.log("sfdgdfs", response.data)
 
           var leads = 0;
           const countAccDate = await response.data?.result?.reduce(
@@ -219,6 +250,7 @@ function Conversation() {
               }
 
               setTotalLead(leads);
+              console.log("Total leads", totalLead)
               return acc;
             },
             {}
@@ -263,7 +295,9 @@ function Conversation() {
         toast.error(error.response?.data?.msg, {
           position: "top-center",
         });
-      });
+      }).finally(()=> {
+        setLoading(false)
+      })
   };
 
   // ------------------ START Table Code --------------------------------
@@ -271,6 +305,8 @@ function Conversation() {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+
+  const calculateWidth = (text) => text.length * 10;
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -423,6 +459,7 @@ function Conversation() {
   const columns = [
     {
       key: React.Key,
+      hidden: true,
     },
 
     // {
@@ -453,12 +490,14 @@ function Conversation() {
       title: "Source",
       dataIndex: "source",
       key: "source",
+      width: calculateWidth("source"),
       ...getColumnSearchProps("source"),
     },
     {
       title: "Sub Source",
       dataIndex: "subSource",
       key: "subSource",
+      width: calculateWidth("subSource"),
       ...getColumnSearchProps("subSource"),
     },
     // {
@@ -527,10 +566,11 @@ function requiredData(conversation) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  if(loading) return <Loader/>
   return (
     <>
       <Layout>
-        <SideBar collapsed={collapsed} />
+        <SideBar collapsed={!collapsed} />
         <Layout>
           <Header
             style={{
@@ -599,9 +639,38 @@ function requiredData(conversation) {
               ) : null}
             </Card>
 
+            {/* <Card>
+              {bots ? (
+                <Form>
+                  <Form.Select
+                    className="mb-3 col-lg-6"
+                    aria-label="Default select example"
+                    style={{ backgroundColor: "#00c67d", width: "50%" }}
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                  >
+                    <option>Open this select menu</option>
+                    {bots &&
+                      bots?.map((bot) => {
+                        return (
+                          <option value={bot._id} key={bot._id}>
+                            {bot.name}
+                          </option>
+                        );
+                      })}
+                  </Form.Select>
+                </Form>
+              ) : null}
+            </Card> */}
+
             <Card>
               {last7DaysData.length ? <Chart data={last7DaysData} /> : ""}
             </Card>
+            <Space direction="horizontal">
+            {!!pieChartData && <PieChartPage data={pieChartData}/>}
+            </Space>
+            
+            
 
             <Modal
               title={conversationHTML?.name}
@@ -641,7 +710,6 @@ function requiredData(conversation) {
                     //   filteredData.length > 0 ? filteredData : conversations
                     // }
 
-                  
 
                     dataSource={
                       filteredData.length > 0
@@ -689,9 +757,7 @@ function requiredData(conversation) {
                     
                   </Table>
                 </>
-              ) : (
-                ""
-              )}
+              ) : null}
             </Card>
           </Content>
         </Layout>
@@ -701,3 +767,8 @@ function requiredData(conversation) {
 }
 
 export default Conversation;
+
+// -- To do list
+// 1. add loader on conversation page
+// 2. converstation page styling
+// 3. add new circular graph according to source

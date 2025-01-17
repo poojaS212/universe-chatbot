@@ -42,21 +42,14 @@ ChartJS.register(
 
 function DashBoard(props) {
   console.log("🚀 ~ file: Dashboard.js:29 ~ DashBoard ~ props:", props);
-  // const pieData = {
-  //   labels : ['One', 'Two', 'Three'],
-  //   datasets : [
-  //     {
-  //       data : [3, 6, 8],
-  //       backgroundColor : ['aqua', 'purple', 'green']
-  //     }
-  //   ]
-  // }
+ 
 
   const [user, setUser] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
   const [totalBots, setTotalBots] = useState(0);
   const [conversationsCount, setConversationsCount] = useState(0);
   const [totalLeads, setTotalLeads] = useState(0);
+  
 
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user_token")));
@@ -163,7 +156,7 @@ function DashBoard(props) {
         </Space>
         <Divider />
         <Space direction="horizontal">
-          <PieChartPage />
+          <PieChartPage data={{value : 123, xyz: 234, abc: 100}}/>
         </Space>
         {/* <Space>
             <Row justify="space-around">
